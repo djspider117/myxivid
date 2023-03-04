@@ -1,0 +1,66 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<Package
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest"
+  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
+  IgnorableNamespaces="uap mp rescap">
+
+  <Identity
+    Name="103d7bd6-023b-48d4-8b1b-c19ecc4b4151"
+    Publisher="CN=ionut"
+    Version="1.0.0.0" />
+
+  <mp:PhoneIdentity PhoneProductId="103d7bd6-023b-48d4-8b1b-c19ecc4b4151" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+
+  <Properties>
+    <DisplayName>MyxiVid</DisplayName>
+    <PublisherDisplayName>ionut</PublisherDisplayName>
+    <Logo>Assets\StoreLogo.png</Logo>
+  </Properties>
+
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Universal" MinVersion="10.0.0.0" MaxVersionTested="10.0.0.0" />
+  </Dependencies>
+
+  <Resources>
+    <Resource Language="x-generate"/>
+  </Resources>
+
+  <Applications>
+    <Application Id="App"
+      Executable="$targetnametoken$.exe"
+      EntryPoint="MyxiVid.App">
+      <uap:VisualElements
+        DisplayName="MyxiVid"
+        Square150x150Logo="Assets\Square150x150Logo.png"
+        Square44x44Logo="Assets\Square44x44Logo.png"
+        Description="MyxiVid"
+        BackgroundColor="transparent">
+        <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png" Square71x71Logo="Assets\SmallTile.png" Square310x310Logo="Assets\LargeTile.png"/>
+        <uap:SplashScreen Image="Assets\SplashScreen.png" />
+      </uap:VisualElements>
+	
+  <Extensions>
+        <desktop:Extension Category="windows.fullTrustProcess" Executable="myxivid.exe">
+          <desktop:FullTrustProcess>
+            <desktop:ParameterGroup GroupId="SyncGroup" Parameters="/Sync"/>
+            <desktop:ParameterGroup GroupId="OtherGroup" Parameters="/Other"/>
+          </desktop:FullTrustProcess>
+        </desktop:Extension>
+      </Extensions>
+    </Application>
+  </Applications>
+
+	<Capabilities>
+		<Capability Name="internetClient" />
+		<Capability Name="privateNetworkClientServer" />
+		<Capability Name="internetClientServer" />
+		<rescap:Capability Name="broadFileSystemAccess" />
+		<rescap:Capability Name="runFullTrust" />
+		<DeviceCapability Name="webcam"/>
+		<DeviceCapability Name="microphone"/>
+	</Capabilities>
+</Package>

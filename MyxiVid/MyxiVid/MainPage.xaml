@@ -1,0 +1,151 @@
+﻿<Page
+    x:Class="MyxiVid.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:MyxiVid"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:xaml="using:Microsoft.Graphics.Canvas.UI.Xaml"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Page.Resources>
+        <Style TargetType="TextBlock">
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Width" Value="90" />
+        </Style>
+
+        <Style TargetType="TextBox">
+            <Setter Property="MinWidth" Value="200" />
+        </Style>
+
+        <Style TargetType="StackPanel">
+            <Setter Property="Spacing" Value="5" />
+        </Style>
+    </Page.Resources>
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="10"/>
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <StackPanel Orientation="Vertical" Spacing="5">
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Playlist path" />
+                <TextBox x:Name="tbPlaylistPath" PlaceholderText="Playlist file..." Width="400"/>
+                <Button x:Name="btnBrowsePlaylist" Content="Browse" Click="btnBrowse_Click" Tag="{x:Bind tbPlaylistPath}"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Audio path" />
+                <TextBox x:Name="tbAudioPath" PlaceholderText="Audio file..." Width="400"/>
+                <Button x:Name="btnBrowseAudio" Content="Browse" Click="btnBrowse_Click" Tag="{x:Bind tbAudioPath}"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="VJ loops folder" />
+                <TextBox x:Name="tbVJLoops" PlaceholderText="VJ loops..." Text="D:\Visual Assets\VJ Loops" Width="400"/>
+                <Button x:Name="btnBrowseVjLoops" Content="Browse" Click="btnBrowseFolder_Click" Tag="{x:Bind tbVJLoops}"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Output path" />
+                <TextBox x:Name="tbOutputPath" PlaceholderText="Output location..." Width="400"/>
+                <Button x:Name="btnBrowseOutput" Content="Browse" Click="btnSaveBrowse_Click" Tag="{x:Bind tbOutputPath}"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Bitrate" />
+                <Slider x:Name="slBitrate" Value="18" Minimum="1" Maximum="22" Width="400"/>
+                <TextBlock Text="{Binding ElementName=slBitrate, Path=Value}" Width="14"/>
+                <TextBlock Text="mb/s" />
+            </StackPanel>
+
+        </StackPanel>
+
+        <StackPanel Orientation="Vertical" Grid.Column="1">
+            <StackPanel.Resources>
+                <Style TargetType="TextBlock">
+                    <Setter Property="VerticalAlignment" Value="Center" />
+                </Style>
+            </StackPanel.Resources>
+            <TextBlock Text="Artist Line" FontWeight="Bold"/>
+            
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="x" />
+                <TextBox x:Name="tbLine1x" Text="1820"/>
+                
+                <TextBlock Text="y" />
+                <TextBox x:Name="tbLine1y" Text="901"/>
+            </StackPanel>
+            
+            <TextBlock Text="Track Line" FontWeight="Bold"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="x" />
+                <TextBox x:Name="tbLine2x" Text="1820"/>
+
+                <TextBlock Text="y" />
+                <TextBox x:Name="tbLine2y" Text="958"/>
+            </StackPanel>
+
+
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Static overlay" />
+                <TextBox x:Name="tbOverlayPath" PlaceholderText="Overaly location..." Text="D:\DJ John Spider\Branding\FREQ_overlay.png" Width="400"/>
+                <Button Content="Browse" Click="btnBrowse_Click" Tag="{x:Bind tbOverlayPath}"/>
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="Episode Text" />
+                <TextBox x:Name="tbTopRight" Text="#101" Width="400"/>
+            </StackPanel>
+
+            <TextBlock Text="Episode Line" FontWeight="Bold"/>
+            <StackPanel Orientation="Horizontal">
+                <TextBlock Text="x" />
+                <TextBox x:Name="tbLine3x" Text="1820"/>
+
+                <TextBlock Text="y" />
+                <TextBox x:Name="tbLine3y" Text="120"/>
+            </StackPanel>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="2">
+            <Button x:Name="btnUpdateComp" Content="Update Comp" Click="btnUpdateComp_Click"/>
+            <Button x:Name="btnRender" Content="Render" Click="btnRender_Click"/>
+            <Button x:Name="btnForcePreview" Content="Force Preview" Click="btnForcePreview_Click" />
+        </StackPanel>
+
+        <ProgressBar x:Name="progStatus" Value="20" Grid.Row="3" Visibility="Collapsed" Grid.ColumnSpan="2"/>
+
+        <Rectangle x:Name="safeOverlay" Fill="#01000000" Grid.RowSpan="124" Grid.ColumnSpan="21512" Visibility="Collapsed"/>
+
+        <Pivot Grid.ColumnSpan="2"
+                            Grid.Row="22">
+            <PivotItem Header="Preview">
+
+                <MediaPlayerElement x:Name="previewPlayer" 
+                            AutoPlay="False"
+                            Grid.ColumnSpan="2"
+                            Grid.Row="22"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            AreTransportControlsEnabled="True" />
+
+
+            </PivotItem>
+            <PivotItem Header="Layout">
+                <Viewbox>
+                    <Border BorderThickness="2" BorderBrush="Black">
+                        <xaml:CanvasControl x:Name="canvas" Draw="CanvasControl_Draw" Width="1920" Height="1080" />
+                    </Border>
+                </Viewbox>
+            </PivotItem>
+        </Pivot>
+    </Grid>
+</Page>
