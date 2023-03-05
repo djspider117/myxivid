@@ -3,6 +3,7 @@ using GhostCore.UWP.Utils;
 using Microsoft.Graphics.Canvas;
 using Microsoft.Graphics.Canvas.Text;
 using Microsoft.Toolkit.Uwp.Helpers;
+using MyxiVid.VideoEffects;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -15,6 +16,7 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Media.Core;
 using Windows.Media.Editing;
+using Windows.Media.Effects;
 using Windows.Media.MediaProperties;
 using Windows.Media.Transcoding;
 using Windows.Storage;
@@ -85,8 +87,19 @@ namespace MyxiVid
             _comp = new MediaComposition();
 
             InitializeComponent();
+            Loaded += MainPage_Loaded;
 
             slBitrate.Value = _encProfile.Video.Bitrate / 1000000;
+        }
+
+        private void MainPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            Loaded -= MainPage_Loaded;
+
+            tbAudioPath.Text = @"C:\_freq\FREQ101\Mixdown\FREQ101.wav";
+            tbPlaylistPath.Text = @"C:\_freq\FREQ101\Mixdown\FREQ101.txt";
+
+            btnUpdateComp_Click(sender, e);
         }
 
         private async void btnUpdateComp_Click(object sender, RoutedEventArgs e)
@@ -121,6 +134,10 @@ namespace MyxiVid
             var audio = await mixfolder.GetFileAsync(Path.GetFileName(tbAudioPath.Text));
 
             var bgAudio = await BackgroundAudioTrack.CreateFromFileAsync(audio);
+
+            AudioEffectDefinition echoEffectDefinition = new AudioEffectDefinition("MyxiVid.VideoEffects.ExampleAudioEffect");
+            bgAudio.AudioEffectDefinitions.Add(echoEffectDefinition);
+
             _comp.BackgroundAudioTracks.Add(bgAudio);
 
             var plsFile = await StorageFile.GetFileFromPathAsync(tbPlaylistPath.Text);
@@ -174,7 +191,11 @@ namespace MyxiVid
                     ds.DrawImage(cb);
                 }
 
+                var videoEffectDefinition = new VideoEffectDefinition("MyxiVid.VideoEffects.ExampleVideoEffect");
+
                 var mainOverlaySurface = MediaClip.CreateFromSurface(mainOverlayTarget, totalDuration);
+                mainOverlaySurface.VideoEffectDefinitions.Add(videoEffectDefinition);
+
                 var mainOverlay = new MediaOverlay(mainOverlaySurface, new Rect(0, 0, 1920, 1080), 1);
                 layer.Overlays.Add(mainOverlay);
 
