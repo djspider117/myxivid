@@ -17,6 +17,11 @@ using Windows.Media.Audio;
 using System.Diagnostics;
 using Windows.Foundation;
 using Windows.Media;
+using Microsoft.Graphics.Canvas.Geometry;
+using System.Runtime.ConstrainedExecution;
+using MathNet.Numerics.IntegralTransforms;
+using System.Numerics;
+using MathNet.Numerics.Statistics;
 
 namespace MyxiVid.VideoEffects
 {
@@ -53,30 +58,49 @@ namespace MyxiVid.VideoEffects
             _canvasDevice = CanvasDevice.CreateFromDirect3D11Device(device);
         }
 
+        internal static Complex[] ComputeFFT(float[] audioSamples)
+        {
+            // Compute the FFT of the audio samples using the MathNet.Numerics library
+            Complex[] fft = new Complex[audioSamples.Length];
+            for (int i = 0; i < audioSamples.Length; i++)
+            {
+                fft[i] = new Complex(audioSamples[i], 0);
+            }
+
+            Fourier.Forward(fft, FourierOptions.NoScaling);
+
+            return fft;
+        }
+
         public void ProcessFrame(ProcessVideoFrameContext context)
         {
 
             using (CanvasBitmap inputBitmap = CanvasBitmap.CreateFromDirect3D11Surface(_canvasDevice, context.InputFrame.Direct3DSurface))
             using (CanvasRenderTarget renderTarget = CanvasRenderTarget.CreateFromDirect3D11Surface(_canvasDevice, context.OutputFrame.Direct3DSurface))
             using (CanvasDrawingSession ds = renderTarget.CreateDrawingSession())
+            using (CanvasPathBuilder pathBuilder = new CanvasPathBuilder(_canvasDevice))
+
             {
                 ds.Clear(Colors.Transparent);
-                //var gaussianBlurEffect = new GaussianBlurEffect
-                //{
-                //    Source = inputBitmap,
-                //    BlurAmount = (float)BlurAmount,
-                //    Optimization = EffectOptimization.Speed
-                //};
-
                 ds.DrawImage(inputBitmap);
 
-                ds.DrawText($"RelativeTime: {context.InputFrame.RelativeTime}", 20, 20, Colors.White);
-                ds.DrawText($"SystemRelativeTime: {context.InputFrame.SystemRelativeTime}", 20, 40, Colors.White);
-                ds.DrawText($"Type: {context.InputFrame.Type}", 20, 60, Colors.White);
-                ds.DrawText($"IsDiscontinuous: {context.InputFrame.IsDiscontinuous}", 20, 80, Colors.White);
-                ds.DrawText($"Duration: {context.InputFrame.Duration}", 20, 100, Colors.White);
+                var fftResult = ComputeFFT(SharedData.Frames);
 
+                float xScale = 1920 / (fftResult.Length / 2);
 
+                pathBuilder.BeginFigure(new Vector2(0, 200));
+
+                for (int i = 0; i < fftResult.Length / 2; i++)
+                {
+                    var mag = (2.0 / SharedData.Frames.Length) * fftResult[i].Magnitude;
+
+                    var y = 200 + mag * 150;
+
+                    pathBuilder.AddLine(new Vector2(i * xScale, (float)y));
+                }
+
+                pathBuilder.EndFigure(CanvasFigureLoop.Open);
+                ds.DrawGeometry(CanvasGeometry.CreatePath(pathBuilder), Colors.White, 2);
             }
         }
 

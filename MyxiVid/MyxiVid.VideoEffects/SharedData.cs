@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace MyxiVid.VideoEffects
 {
-    public class SharedData
+    internal class SharedData
     {
-        public static float[] FramePacket;
+        public static readonly float[] Frames = new float[960 * 2];
+        public static int FrameIndex = 0;
     }
 }
