@@ -88,7 +88,6 @@ namespace MyxiVid
 
             InitializeComponent();
             Loaded += MainPage_Loaded;
-
             slBitrate.Value = _encProfile.Video.Bitrate / 1000000;
         }
 
@@ -135,8 +134,8 @@ namespace MyxiVid
 
             var bgAudio = await BackgroundAudioTrack.CreateFromFileAsync(audio);
 
-            AudioEffectDefinition echoEffectDefinition = new AudioEffectDefinition("MyxiVid.VideoEffects.ExampleAudioEffect");
-            bgAudio.AudioEffectDefinitions.Add(echoEffectDefinition);
+            //AudioEffectDefinition echoEffectDefinition = new AudioEffectDefinition("MyxiVid.VideoEffects.ExampleAudioEffect");
+            //bgAudio.AudioEffectDefinitions.Add(echoEffectDefinition);
 
             _comp.BackgroundAudioTracks.Add(bgAudio);
 
@@ -191,10 +190,11 @@ namespace MyxiVid
                     ds.DrawImage(cb);
                 }
 
-                var videoEffectDefinition = new VideoEffectDefinition("MyxiVid.VideoEffects.ExampleVideoEffect");
 
                 var mainOverlaySurface = MediaClip.CreateFromSurface(mainOverlayTarget, totalDuration);
-                mainOverlaySurface.VideoEffectDefinitions.Add(videoEffectDefinition);
+
+                //var videoEffectDefinition = new VideoEffectDefinition("MyxiVid.VideoEffects.ExampleVideoEffect");
+                //mainOverlaySurface.VideoEffectDefinitions.Add(videoEffectDefinition);
 
                 var mainOverlay = new MediaOverlay(mainOverlaySurface, new Rect(0, 0, 1920, 1080), 1);
                 layer.Overlays.Add(mainOverlay);
@@ -220,6 +220,7 @@ namespace MyxiVid
 
             _previewStream = _comp.GeneratePreviewMediaStreamSource(1920, 1080);
             previewPlayer.Source = MediaSource.CreateFromMediaStreamSource(_previewStream);
+            previewPlayer.MediaPlayer.Volume = 0;
             previewPlayer.Visibility = Visibility.Visible;
         }
 

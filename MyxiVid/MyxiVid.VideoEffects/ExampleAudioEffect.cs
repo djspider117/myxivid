@@ -2,11 +2,13 @@
 using MathNet.Numerics.IntegralTransforms;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Media;
@@ -60,13 +62,26 @@ namespace MyxiVid.VideoEffects
                 float* inputDataInFloat = (float*)inputDataInBytes;
                 int dataInFloatLength = (int)inputBuffer.Length / sizeof(float);
 
-                for (int i = 0; i < dataInFloatLength; i++)
+                var arr = new float[dataInFloatLength / 3];
+                for (int i = 0; i < dataInFloatLength / 3; i++)
                 {
-                    SharedData.Frames[SharedData.FrameIndex] = inputDataInFloat[i];
-                    SharedData.FrameIndex++;
-                    if (SharedData.FrameIndex >= SharedData.Frames.Length)
-                        SharedData.FrameIndex = 0;
+                    arr[i] = inputDataInFloat[i];
                 }
+                SharedData.AudioFrames.Enqueue(arr);
+
+                arr = new float[dataInFloatLength / 3];
+                for (int i = 0; i < dataInFloatLength / 3; i++)
+                {
+                    arr[i] = inputDataInFloat[i + dataInFloatLength / 3];
+                }
+                SharedData.AudioFrames.Enqueue(arr);
+
+                arr = new float[dataInFloatLength / 3];
+                for (int i = 0; i < dataInFloatLength / 3; i++)
+                {
+                    arr[i] = inputDataInFloat[i + dataInFloatLength * (2 / 3)];
+                }
+                SharedData.AudioFrames.Enqueue(arr);
             }
         }
 
