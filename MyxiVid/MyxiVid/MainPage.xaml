@@ -49,7 +49,7 @@
 
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="VJ loops folder" />
-                <TextBox x:Name="tbVJLoops" PlaceholderText="VJ loops..." Text="D:\Visual Assets\VJ Loops" Width="400"/>
+                <TextBox x:Name="tbVJLoops" PlaceholderText="VJ loops..." Text="D:\Visual Assets\VJ Loops 3" Width="400"/>
                 <Button x:Name="btnBrowseVjLoops" Content="Browse" Click="btnBrowseFolder_Click" Tag="{x:Bind tbVJLoops}"/>
             </StackPanel>
 

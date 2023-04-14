@@ -91,14 +91,14 @@ namespace MyxiVid
             slBitrate.Value = _encProfile.Video.Bitrate / 1000000;
         }
 
-        private void MainPage_Loaded(object sender, RoutedEventArgs e)
+        private async void MainPage_Loaded(object sender, RoutedEventArgs e)
         {
             Loaded -= MainPage_Loaded;
 
-            tbAudioPath.Text = @"C:\_freq\FREQ101\Mixdown\FREQ101.wav";
-            tbPlaylistPath.Text = @"C:\_freq\FREQ101\Mixdown\FREQ101.txt";
+            tbAudioPath.Text = @"C:\_freq\FREQ102\Mixdown\FREQ102.wav";
+            tbPlaylistPath.Text = @"C:\_freq\FREQ102\Mixdown\FREQ102.txt";
 
-            btnUpdateComp_Click(sender, e);
+            //btnUpdateComp_Click(sender, e);
         }
 
         private async void btnUpdateComp_Click(object sender, RoutedEventArgs e)
