@@ -49,7 +49,7 @@
 
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="VJ loops folder" />
-                <TextBox x:Name="tbVJLoops" PlaceholderText="VJ loops..." Text="D:\Visual Assets\VJ Loops 3" Width="400"/>
+                <TextBox x:Name="tbVJLoops" PlaceholderText="VJ loops..." Text="D:\Visual Assets\VideoGen" Width="400"/>
                 <Button x:Name="btnBrowseVjLoops" Content="Browse" Click="btnBrowseFolder_Click" Tag="{x:Bind tbVJLoops}"/>
             </StackPanel>
 
@@ -61,7 +61,7 @@
 
             <StackPanel Orientation="Horizontal">
                 <TextBlock Text="Bitrate" />
-                <Slider x:Name="slBitrate" Value="18" Minimum="1" Maximum="22" Width="400"/>
+                <Slider x:Name="slBitrate" Value="8" Minimum="1" Maximum="22" Width="400"/>
                 <TextBlock Text="{Binding ElementName=slBitrate, Path=Value}" Width="14"/>
                 <TextBlock Text="mb/s" />
             </StackPanel>

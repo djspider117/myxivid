@@ -20,6 +20,7 @@ using Windows.Media.Effects;
 using Windows.Media.MediaProperties;
 using Windows.Media.Transcoding;
 using Windows.Storage;
+using Windows.Storage.Pickers;
 using Windows.UI;
 using Windows.UI.Composition;
 using Windows.UI.Core;
@@ -95,8 +96,8 @@ namespace MyxiVid
         {
             Loaded -= MainPage_Loaded;
 
-            tbAudioPath.Text = @"C:\_freq\FREQ102\Mixdown\FREQ102.wav";
-            tbPlaylistPath.Text = @"C:\_freq\FREQ102\Mixdown\FREQ102.txt";
+            tbAudioPath.Text = @"C:\_freq\FREQ104\Mixdown\FREQ104.wav";
+            tbPlaylistPath.Text = @"C:\_freq\FREQ104\Mixdown\FREQ104.txt";
 
             //btnUpdateComp_Click(sender, e);
         }
@@ -109,6 +110,8 @@ namespace MyxiVid
                 return;
 
             previewPlayer.Visibility = Visibility.Collapsed;
+
+            tbTopRight.Text = $"#{Path.GetFileNameWithoutExtension(tbAudioPath.Text)}".Replace("FREQ", "");
 
             _l1x = float.Parse(tbLine1x.Text);
             _l1y = float.Parse(tbLine1y.Text);
@@ -271,7 +274,15 @@ namespace MyxiVid
         {
             var tb = (sender as Button).Tag as TextBox;
 
-            var pickerResult = await PickerUtils.SaveFileAsync("render.mp4");
+            var pickerResult = await new FileSavePicker
+            {
+                SuggestedFileName = Path.GetFileNameWithoutExtension(tbAudioPath.Text),
+                FileTypeChoices = {
+                {
+                    "MP4 File",
+                    new List<string> { ".mp4" }
+                } }
+            }.PickSaveFileAsync();
 
             if (pickerResult == null)
                 return;
