@@ -96,8 +96,8 @@ namespace MyxiVid
         {
             Loaded -= MainPage_Loaded;
 
-            tbAudioPath.Text = @"C:\_freq\FREQ104\Mixdown\FREQ104.wav";
-            tbPlaylistPath.Text = @"C:\_freq\FREQ104\Mixdown\FREQ104.txt";
+            tbAudioPath.Text = @"D:\VOIDLOGIC\Mixes\SpringPromo\Mixdown\Voidlogic - Spring Promo Mix 2024.wav";
+            tbPlaylistPath.Text = @"D:\VOIDLOGIC\Mixes\SpringPromo\Mixdown\Tracklist.txt";
 
             //btnUpdateComp_Click(sender, e);
         }
@@ -150,6 +150,12 @@ namespace MyxiVid
             var parseResult = _parser.Parse(lines);
             var layer = new MediaOverlayLayer();
 
+
+            var sf = await StorageFolder.GetFolderFromPathAsync(tbVJLoops.Text);
+            var files = await sf.GetFilesAsync();
+            
+
+
             var totalDuration = bgAudio.OriginalDuration;
             for (int i = 0; i < parseResult.Count; i++)
             {
@@ -168,8 +174,8 @@ namespace MyxiVid
                     else
                         ds.DrawText(track.TrackName, _l2x, _l2y, Colors.White, _trackTextFormat);
 
-                    if (!string.IsNullOrWhiteSpace(tbTopRight.Text))
-                        ds.DrawText(tbTopRight.Text, _l3x, _l3y, Colors.White, _episodeTextFormat);
+                    //if (!string.IsNullOrWhiteSpace(tbTopRight.Text))
+                    //    ds.DrawText(tbTopRight.Text, _l3x, _l3y, Colors.White, _episodeTextFormat);
                 }
 
                 var tlr = MediaClip.CreateFromSurface(rt, duration);
@@ -178,6 +184,25 @@ namespace MyxiVid
                     Delay = track.Timestamp
                 };
                 layer.Overlays.Add(overlay);
+
+                TimeSpan localDuration = TimeSpan.Zero;
+                while (localDuration < duration)
+                {
+                    foreach (var file in files)
+                    {
+                        var clip = await MediaClip.CreateFromFileAsync(file);
+                        clip.Volume = 0;
+                        _comp.Clips.Add(clip);
+
+                        localDuration += clip.TrimmedDuration;
+
+                        if (localDuration >= duration)
+                        {
+                            clip.TrimTimeFromEnd = localDuration - duration;
+                            break;
+                        }
+                    }
+                }
             }
 
             if (!string.IsNullOrWhiteSpace(tbOverlayPath.Text))
@@ -205,20 +230,20 @@ namespace MyxiVid
             }
             _comp.OverlayLayers.Add(layer);
 
-            var sf = await StorageFolder.GetFolderFromPathAsync(tbVJLoops.Text);
-            var files = await sf.GetFilesAsync();
-            while (_comp.Duration < totalDuration)
-            {
-                foreach (var file in files)
-                {
-                    var clip = await MediaClip.CreateFromFileAsync(file);
-                    clip.Volume = 0;
-                    _comp.Clips.Add(clip);
+            //var sf = await StorageFolder.GetFolderFromPathAsync(tbVJLoops.Text);
+            //var files = await sf.GetFilesAsync();
+            //while (_comp.Duration < totalDuration)
+            //{
+            //    foreach (var file in files)
+            //    {
+            //        var clip = await MediaClip.CreateFromFileAsync(file);
+            //        clip.Volume = 0;
+            //        _comp.Clips.Add(clip);
 
-                    if (_comp.Duration >= totalDuration)
-                        break;
-                }
-            }
+            //        if (_comp.Duration >= totalDuration)
+            //            break;
+            //    }
+            //}
             _comp.Clips.Last().TrimTimeFromEnd = _comp.Duration - totalDuration;
 
             _previewStream = _comp.GeneratePreviewMediaStreamSource(1920, 1080);
@@ -315,6 +340,4 @@ namespace MyxiVid
             canvas.Invalidate();
         }
     }
-
-
 }
